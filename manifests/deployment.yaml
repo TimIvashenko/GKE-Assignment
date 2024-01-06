@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeapp-deployment
+  namespace: default
+  labels:
+    app: nodeapp-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodeapp-deployment
+  template:
+    metadata:
+      labels:
+        app: nodeapp-deployment
+    spec:
+      containers:
+      - name: nodeapp-container
+        image: me-west1-docker.pkg.dev/mongodb-nodeapp-project/docker-image/node-app:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 70
+          periodSeconds: 5
+          timeoutSeconds: 60
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 70
+          periodSeconds: 5
+          timeoutSeconds: 60
+          successThreshold: 1
+          failureThreshold: 3

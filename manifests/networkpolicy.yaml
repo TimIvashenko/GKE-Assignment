@@ -1,0 +1,10 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: nodeapp-deployment  # Select your Node.js pods
+  ingress:
+  - from: []  # Allow all ingress traffic to these pods
