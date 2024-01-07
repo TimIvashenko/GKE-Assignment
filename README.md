@@ -47,4 +47,6 @@ built an image and pushed it to DockerHub, also can be used in Artifact Registry
 
 ## Kubernetes Manifest files for the Nodeapp.js deployment on cluster
 
+prerequisites : OpenSSL self signed tls.crt and tls.key to be used as secrets on the manifest file
+
 Using the GCP Cloudshell I run and create all needed manifest files (deployment,service,HPA,ingress,backend,networkpolicy,secret)
