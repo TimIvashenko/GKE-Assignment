@@ -1,0 +1,39 @@
+gcloud config set compute/region me-west1
+
+gcloud container clusters create appnet-cluster \
+--region me-west1 \
+--num-nodes 1 \
+--node-locations me-west1-a,me-west1-b,me-west1-c \
+--disk-size 10GB \
+--network my-vpc \
+--subnetwork subnet-mongodb \
+--tags nodeapp,allow-mongodb
+
+gcloud container clusters describe appnet2-cluster --region me-west1
+
+export CLOUDSHELL_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+
+gcloud compute firewall-rules create all-pods-and-master-ipv4-cidrs \
+    --network default \
+    --allow all \
+    --direction INGRESS \
+    --source-ranges 10.0.0.0/8,172.16.2.0/28
+    
+kubectl create deployment nodeapp-deployment --image=me-west1-docker.pkg.dev/mongodb-nodeapp-project/docker-image/node-app:v1
+
+kubectl expose deployment nodeapp-deployment --port=3000 --target-port=3000
+
+gcloud compute firewall-rules create allow-nginx-ingress \
+    --network my-vpc \
+    --allow tcp:80,tcp:443 \
+    --target-tags nodeapp \
+    --direction INGRESS
+    
+Before you deploy the NGINX Ingress Helm chart to the GKE cluster, add the nginx-stable Helm repository in Cloud Shell:
+
+- helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+- helm repo update
+
+Deploy an NGINX controller Deployment and Service by running the following command:
+
+- helm install nginx-ingress ingress-nginx/ingress-nginx

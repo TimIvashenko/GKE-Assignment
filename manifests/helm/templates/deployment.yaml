@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeapp-deployment
+  namespace: default
+  labels:
+    app: nodeapp-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: nodeapp-deployment
+  template:
+    metadata:
+      labels:
+        app: nodeapp-deployment
+    spec:
+      containers:
+      - name: nodeapp-container
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: 70
+          periodSeconds: 5
+          timeoutSeconds: 60
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: 70
+          periodSeconds: 5
+          timeoutSeconds: 60
+          successThreshold: 1
+          failureThreshold: 3
