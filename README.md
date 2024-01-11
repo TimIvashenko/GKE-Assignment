@@ -35,27 +35,16 @@ it creates three e2-medium instances, downloads MongoDB on all of them, and conf
 
 prerequisites : GCP Account, Kubernetes engine API
 
-in cloud shell create a cluster:
+in cloud shell create a cluster and deploy the app:
 
-- ```gcloud config set compute/region me-west1```
+run scripts :
 
--  gcloud container clusters create appnet-cluster \
-   --region me-west1 \
-   --num-nodes 1 \
-   --node-locations me-west1-a,me-west1-b,me-west1-c \
-   --disk-size 10GB \
-   --network my-vpc \
-   --subnetwork subnet-mongodb \
-   --tags nodeapp,allow-mongodb
-
-- ```gcloud container clusters describe appnet-cluster --region me-west1```
+- ```./create_cluster.sh```
+- ```./deploy_nginx_ingress.sh```
+- ```./apply_maniefsts.sh```
 
 ## Nodeapp changes and Docker Image :
 
 I edited the nodeapp.js to use the ReplicaSet instead of a single server,
 
 built an image and pushed it to DockerHub, also can be used in Artifact Registry (GCR is soon to be deprecated)
-
-## Kubernetes Manifest files for the Nodeapp.js deployment on cluster
-
-Using the GCP Cloudshell I run and create all needed manifest files (deployment,service,HPA,ingress,backend,networkpolicy,secret) and use self signed openssl
