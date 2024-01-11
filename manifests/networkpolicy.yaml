@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: networking.k8s.io/v1 # not needed when it is not enabled
 kind: NetworkPolicy
 metadata:
   name: allow-ingress
