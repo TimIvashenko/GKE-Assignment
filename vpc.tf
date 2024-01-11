@@ -1,16 +1,16 @@
-resource "google_compute_network" "my_vpc" {
+resource "google_compute_network" "my_vpc" {  # name of my vpc
   name                    = "my-vpc"
   auto_create_subnetworks = false
 }
 
-resource "google_compute_subnetwork" "subnet_mongodb" {
+resource "google_compute_subnetwork" "subnet_mongodb" { # can add another subnet for the GKE deployment
   name          = "subnet-mongodb"
   network       = google_compute_network.my_vpc.name
   ip_cidr_range = "10.0.1.0/24"
   region        = "me-west1"
 }
 
-resource "google_compute_router" "nat_router" {
+resource "google_compute_router" "nat_router" { # directing traffic within your VPC
   name    = "nat-router"
   network = google_compute_network.my_vpc.name
   region  = "me-west1"
@@ -21,7 +21,7 @@ resource "google_compute_address" "nat_ip" {
   region = "me-west1"
 }
 
-resource "google_compute_router_nat" "nat_gateway" {
+resource "google_compute_router_nat" "nat_gateway" { # NAT gateway allows the instances to initiate outbound connections to the internet
   name                               = "nat-gateway"
   router                             = google_compute_router.nat_router.name
   region                             = "me-west1"
